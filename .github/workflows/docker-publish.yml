@@ -27,4 +27,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/efx-server:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/efx-ffscraper:latest
