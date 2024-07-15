@@ -38,10 +38,17 @@ month_numbers = {
     "Dec": 12
 }
 
+impact_lookup = {
+    'red': 'high',
+    'ora': 'medium',
+    'yel': 'low',
+}
+
 
 def getURL(day=1, month=1, year=2020, timeline='day'):
     date = f'{month_names.get(month, "Jan")}{day}.{year}'
     url = f'https://www.forexfactory.com/calendar?{timeline}={date}'
+    print("URL: ", url)
     return url
 
 def getPageHTML(url):  # gets url and returns source html
@@ -77,6 +84,7 @@ def getRecords(url):
     # columns
     c_time = []
     c_curr = []
+    c_impact = []
     c_event = []
     c_forecast = []
     c_actual = []
@@ -87,7 +95,7 @@ def getRecords(url):
     soup = BeautifulSoup(pageHTML, 'html.parser')
     table = soup.find('table', class_='calendar__table')
     events = table.find_all('td', class_='calendar__time')
-    print(events)
+    # print(events)
     # start date
     startDate = table.find_next('tr', class_='calendar__row--new-day').find_next('span', class_='date')
     matchObj = re.search('([a-zA-Z]{3}) ([a-zA-Z]{3}) ([0-9]{1,2})', startDate.text)
@@ -116,6 +124,10 @@ def getRecords(url):
         # event name
         name = event.find_next_sibling('td', class_='calendar__event').find_next('span').text.strip()
 
+        # impact
+        impact = event.find_next_sibling('td', class_='calendar__impact').find_next('span').get('class')[1].split('-')[-1]
+        impact = impact_lookup.get(impact, 'none')
+
         # previous
         previous = (event.find_next_sibling('td', class_='calendar__previous').text).replace('\n', '').replace(' ', '')
         previous = previous if len(previous) > 1 else 'unknown'
@@ -131,6 +143,7 @@ def getRecords(url):
         # save row
         c_time.append(f'{p_day}/{p_month}/{p_year} {hour}:{minute}')
         c_curr.append(curr)
+        c_impact.append(impact)
         c_event.append(name)
         c_forecast.append(forecast)
         c_actual.append(actual)
@@ -140,6 +153,7 @@ def getRecords(url):
     data = {
         'Time': c_time,
         'Currency': c_curr,
+        'Impact': c_impact,
         'Event': c_event,
         'Forecast': c_forecast,
         'Actual': c_actual,
