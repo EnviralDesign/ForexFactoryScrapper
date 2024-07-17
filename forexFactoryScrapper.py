@@ -46,7 +46,9 @@ impact_lookup = {
 
 
 def getURL(day=1, month=1, year=2020, timeline='day'):
-    date = f'{month_names.get(month, "Jan")}{day}.{year}'
+    # date = f'{month_names.get(month, "Jan")}{day}.{year}'
+    month = int(month)
+    date = f'{month_names.get(month)}{day}.{year}'
     url = f'https://www.forexfactory.com/calendar?{timeline}={date}'
     print("URL: ", url)
     return url

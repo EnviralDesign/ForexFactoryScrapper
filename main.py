@@ -26,6 +26,13 @@ def daily_data():
 
     url = getURL(day, month, year, 'day')
     record_json = getRecords(url)
+    # record_json = {
+    #     'DEBUG':url,
+    #     'day': day,
+    #     'month': month,
+    #     'year': year,
+    #     'records': record_json
+    #     }
     return jsonify(record_json), 200
 
 
